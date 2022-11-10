@@ -12,8 +12,7 @@ This library has been released as a v1 library though future development will be
 ## Announcing Akamai OPEN EdgeGrid for GoLang v3 (release v3.0.0)
 
 The v3 version of this module is under active development and provides a subset of Akamai APIs for use in the 
-Akamai Terraform Provider. The v3 version **does not yet** implement the full set of Akamai endpoints supported by the 
-0.x and 1.x releases.  
+Akamai Terraform Provider.
 
 New users are encouraged to adopt v3 version it is a simpler API wrapper with little to no business logic.
 
