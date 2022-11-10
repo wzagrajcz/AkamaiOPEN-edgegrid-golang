@@ -1,5 +1,6 @@
 # Akamai OPEN EdgeGrid for GoLang v1
 
+[![Build Status](https://github.com/akamai/AkamaiOPEN-edgegrid-golang/actions/workflows/checks.yml/badge.svg?branch=v1)](https://github.com/akamai/AkamaiOPEN-edgegrid-golang/actions/workflows/checks.yml?query=branch%3Av1)
 [![GoDoc](https://godoc.org/github.com/akamai/AkamaiOPEN-edgegrid-golang?status.svg)](https://godoc.org/github.com/akamai/AkamaiOPEN-edgegrid-golang)
 [![Go Report Card](https://goreportcard.com/badge/github.com/akamai/AkamaiOPEN-edgegrid-golang)](https://goreportcard.com/report/github.com/akamai/AkamaiOPEN-edgegrid-golang)
 [![License](http://img.shields.io/:license-apache-blue.svg)](https://github.com/akamai/AkamaiOPEN-edgegrid-golang/blob/v1/LICENSE)
