@@ -1,5 +1,10 @@
 # EDGEGRID GOLANG RELEASE NOTES
 
+## 1.2.2 (Jul 14, 2022)
+
+#### BUG FIXES:
+* Update schema version for GTM v1.6
+
 ## 1.2.1 (Jul 14, 2022)
 
 #### BUG FIXES:
