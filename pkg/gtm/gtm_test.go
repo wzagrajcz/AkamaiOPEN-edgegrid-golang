@@ -1,20 +1,22 @@
-package dns
+package gtm
 
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
 
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/v2/pkg/edgegrid"
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/v2/pkg/session"
+	"github.com/wzagrajcz/AkamaiOPEN-edgegrid-golang/v3/pkg/edgegrid"
+	"github.com/wzagrajcz/AkamaiOPEN-edgegrid-golang/v3/pkg/session"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func mockAPIClient(t *testing.T, mockServer *httptest.Server) DNS {
+func mockAPIClient(t *testing.T, mockServer *httptest.Server) GTM {
 	serverURL, err := url.Parse(mockServer.URL)
 	require.NoError(t, err)
 	certPool := x509.NewCertPool()
@@ -32,9 +34,18 @@ func mockAPIClient(t *testing.T, mockServer *httptest.Server) DNS {
 }
 
 func dummyOpt() Option {
-	return func(*dns) {
+	return func(*gtm) {
 
 	}
+}
+
+func loadTestData(name string) ([]byte, error) {
+	data, err := ioutil.ReadFile(fmt.Sprintf("./testdata/%s", name))
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func TestClient(t *testing.T) {
@@ -42,17 +53,17 @@ func TestClient(t *testing.T) {
 	require.NoError(t, err)
 	tests := map[string]struct {
 		options  []Option
-		expected *dns
+		expected *gtm
 	}{
 		"no options provided, return default": {
 			options: nil,
-			expected: &dns{
+			expected: &gtm{
 				Session: sess,
 			},
 		},
 		"dummy option": {
 			options: []Option{dummyOpt()},
-			expected: &dns{
+			expected: &gtm{
 				Session: sess,
 			},
 		},

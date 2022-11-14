@@ -9,23 +9,23 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/v2/pkg/session"
+	"github.com/wzagrajcz/AkamaiOPEN-edgegrid-golang/v3/pkg/session"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestGtm_NewGeoMap(t *testing.T) {
+func TestGtm_NewCidrMap(t *testing.T) {
 	client := Client(session.Must(session.New()))
 
-	geomap := client.NewGeoMap(context.Background(), "foo")
+	cmap := client.NewCidrMap(context.Background(), "foo")
 
-	assert.Equal(t, "foo", geomap.Name)
+	assert.Equal(t, "foo", cmap.Name)
 }
 
-func TestGtm_ListGeoMap(t *testing.T) {
-	var result GeoMapList
+func TestGtm_ListCidrMaps(t *testing.T) {
+	var result CidrMapList
 
-	respData, err := loadTestData("TestGtm_ListGeoMap.resp.json")
+	respData, err := loadTestData("TestGtm_ListCidrMap.resp.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func TestGtm_ListGeoMap(t *testing.T) {
 		responseStatus   int
 		responseBody     string
 		expectedPath     string
-		expectedResponse []*GeoMap
+		expectedResponse []*CidrMap
 		withError        error
 		headers          http.Header
 	}{
@@ -50,8 +50,8 @@ func TestGtm_ListGeoMap(t *testing.T) {
 			},
 			responseStatus:   http.StatusOK,
 			responseBody:     string(respData),
-			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/geographic-maps",
-			expectedResponse: result.GeoMapItems,
+			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/cidr-maps",
+			expectedResponse: result.CidrMapItems,
 		},
 		"500 internal server error": {
 			domainName:     "example.akadns.net",
@@ -61,14 +61,14 @@ func TestGtm_ListGeoMap(t *testing.T) {
 {
     "type": "internal_error",
     "title": "Internal Server Error",
-    "detail": "Error fetching geomap",
+    "detail": "Error fetching asmap",
     "status": 500
 }`,
-			expectedPath: "/config-gtm/v1/domains/example.akadns.net/geographic-maps",
+			expectedPath: "/config-gtm/v1/domains/example.akadns.net/cidr-maps",
 			withError: &Error{
 				Type:       "internal_error",
 				Title:      "Internal Server Error",
-				Detail:     "Error fetching geomap",
+				Detail:     "Error fetching asmap",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
@@ -84,7 +84,7 @@ func TestGtm_ListGeoMap(t *testing.T) {
 				assert.NoError(t, err)
 			}))
 			client := mockAPIClient(t, mockServer)
-			result, err := client.ListGeoMaps(
+			result, err := client.ListCidrMaps(
 				session.ContextWithOptions(
 					context.Background(),
 					session.WithContextHeaders(test.headers)), test.domainName)
@@ -98,10 +98,10 @@ func TestGtm_ListGeoMap(t *testing.T) {
 	}
 }
 
-func TestGtm_GetGeoMap(t *testing.T) {
-	var result GeoMap
+func TestGtm_GetCidrMap(t *testing.T) {
+	var result CidrMap
 
-	respData, err := loadTestData("TestGtm_GetGeoMap.resp.json")
+	respData, err := loadTestData("TestGtm_GetCidrMap.resp.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,7 +116,7 @@ func TestGtm_GetGeoMap(t *testing.T) {
 		responseStatus   int
 		responseBody     string
 		expectedPath     string
-		expectedResponse *GeoMap
+		expectedResponse *CidrMap
 		withError        error
 		headers          http.Header
 	}{
@@ -128,7 +128,7 @@ func TestGtm_GetGeoMap(t *testing.T) {
 			},
 			responseStatus:   http.StatusOK,
 			responseBody:     string(respData),
-			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/geographic-maps/Software-rollout",
+			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/cidr-maps/Software-rollout",
 			expectedResponse: &result,
 		},
 		"500 internal server error": {
@@ -140,14 +140,14 @@ func TestGtm_GetGeoMap(t *testing.T) {
 {
     "type": "internal_error",
     "title": "Internal Server Error",
-    "detail": "Error fetching geomap",
+    "detail": "Error fetching asmap",
     "status": 500
 }`,
-			expectedPath: "/config-gtm/v1/domains/example.akadns.net/geographic-maps/Software-rollout",
+			expectedPath: "/config-gtm/v1/domains/example.akadns.net/cidr-maps/Software-rollout",
 			withError: &Error{
 				Type:       "internal_error",
 				Title:      "Internal Server Error",
-				Detail:     "Error fetching geomap",
+				Detail:     "Error fetching asmap",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
@@ -163,7 +163,7 @@ func TestGtm_GetGeoMap(t *testing.T) {
 				assert.NoError(t, err)
 			}))
 			client := mockAPIClient(t, mockServer)
-			result, err := client.GetGeoMap(
+			result, err := client.GetCidrMap(
 				session.ContextWithOptions(
 					context.Background(),
 					session.WithContextHeaders(test.headers)), test.name, test.domainName)
@@ -177,20 +177,20 @@ func TestGtm_GetGeoMap(t *testing.T) {
 	}
 }
 
-func TestGtm_NewGeoAssignment(t *testing.T) {
+func TestGtm_NewCidrAssignment(t *testing.T) {
 	client := Client(session.Must(session.New()))
 
-	asn := client.NewGeoAssignment(context.Background(), nil, 100, "foo")
+	asn := client.NewCidrAssignment(context.Background(), nil, 100, "foo")
 
 	assert.Equal(t, 100, asn.DatacenterId)
 	assert.Equal(t, "foo", asn.Nickname)
 }
 
-func TestGtm_CreateGeoMap(t *testing.T) {
-	var result GeoMapResponse
-	var req GeoMap
+func TestGtm_CreateCidrMap(t *testing.T) {
+	var result CidrMapResponse
+	var req CidrMap
 
-	respData, err := loadTestData("TestGtm_CreateGeoMap.resp.json")
+	respData, err := loadTestData("TestGtm_CreateCidrMap.resp.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -199,7 +199,7 @@ func TestGtm_CreateGeoMap(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	reqData, err := loadTestData("TestGtm_CreateGeoMap.req.json")
+	reqData, err := loadTestData("TestGtm_CreateCidrMap.req.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -209,28 +209,28 @@ func TestGtm_CreateGeoMap(t *testing.T) {
 	}
 
 	tests := map[string]struct {
-		geomap           *GeoMap
+		cmap             *CidrMap
 		domainName       string
 		responseStatus   int
 		responseBody     string
 		expectedPath     string
-		expectedResponse *GeoMapResponse
+		expectedResponse *CidrMapResponse
 		withError        error
 		headers          http.Header
 	}{
 		"200 OK": {
-			geomap:     &req,
+			cmap:       &req,
 			domainName: "example.akadns.net",
 			headers: http.Header{
 				"Content-Type": []string{"application/vnd.config-gtm.v1.4+json;charset=UTF-8"},
 			},
 			responseStatus:   http.StatusOK,
 			responseBody:     string(respData),
-			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			expectedResponse: &result,
 		},
 		"500 internal server error": {
-			geomap:         &req,
+			cmap:           &req,
 			domainName:     "example.akadns.net",
 			headers:        http.Header{},
 			responseStatus: http.StatusInternalServerError,
@@ -238,13 +238,13 @@ func TestGtm_CreateGeoMap(t *testing.T) {
 {
     "type": "internal_error",
     "title": "Internal Server Error",
-    "detail": "Error creating geomap"
+    "detail": "Error creating asmap"
 }`,
-			expectedPath: "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath: "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			withError: &Error{
 				Type:       "internal_error",
 				Title:      "Internal Server Error",
-				Detail:     "Error creating geomap",
+				Detail:     "Error creating asmap",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
@@ -260,10 +260,10 @@ func TestGtm_CreateGeoMap(t *testing.T) {
 				assert.NoError(t, err)
 			}))
 			client := mockAPIClient(t, mockServer)
-			result, err := client.CreateGeoMap(
+			result, err := client.CreateCidrMap(
 				session.ContextWithOptions(
 					context.Background(),
-					session.WithContextHeaders(test.headers)), test.geomap, test.domainName)
+					session.WithContextHeaders(test.headers)), test.cmap, test.domainName)
 			if test.withError != nil {
 				assert.True(t, errors.Is(err, test.withError), "want: %s; got: %s", test.withError, err)
 				return
@@ -274,11 +274,11 @@ func TestGtm_CreateGeoMap(t *testing.T) {
 	}
 }
 
-func TestGtm_UpdateGeoMap(t *testing.T) {
-	var result GeoMapResponse
-	var req GeoMap
+func TestGtm_UpdateCidrMap(t *testing.T) {
+	var result CidrMapResponse
+	var req CidrMap
 
-	respData, err := loadTestData("TestGtm_CreateGeoMap.resp.json")
+	respData, err := loadTestData("TestGtm_CreateCidrMap.resp.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -287,7 +287,7 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	reqData, err := loadTestData("TestGtm_CreateGeoMap.req.json")
+	reqData, err := loadTestData("TestGtm_CreateCidrMap.req.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -297,7 +297,7 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 	}
 
 	tests := map[string]struct {
-		geomap           *GeoMap
+		cmap             *CidrMap
 		domainName       string
 		responseStatus   int
 		responseBody     string
@@ -307,18 +307,18 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 		headers          http.Header
 	}{
 		"200 OK": {
-			geomap:     &req,
+			cmap:       &req,
 			domainName: "example.akadns.net",
 			headers: http.Header{
 				"Content-Type": []string{"application/vnd.config-gtm.v1.4+json;charset=UTF-8"},
 			},
 			responseStatus:   http.StatusOK,
 			responseBody:     string(respData),
-			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			expectedResponse: result.Status,
 		},
 		"500 internal server error": {
-			geomap:         &req,
+			cmap:           &req,
 			domainName:     "example.akadns.net",
 			headers:        http.Header{},
 			responseStatus: http.StatusInternalServerError,
@@ -326,13 +326,13 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 {
     "type": "internal_error",
     "title": "Internal Server Error",
-    "detail": "Error updating geomap"
+    "detail": "Error creating asmap"
 }`,
-			expectedPath: "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath: "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			withError: &Error{
 				Type:       "internal_error",
 				Title:      "Internal Server Error",
-				Detail:     "Error updating geomap",
+				Detail:     "Error creating asmap",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
@@ -348,10 +348,10 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 				assert.NoError(t, err)
 			}))
 			client := mockAPIClient(t, mockServer)
-			result, err := client.UpdateGeoMap(
+			result, err := client.UpdateCidrMap(
 				session.ContextWithOptions(
 					context.Background(),
-					session.WithContextHeaders(test.headers)), test.geomap, test.domainName)
+					session.WithContextHeaders(test.headers)), test.cmap, test.domainName)
 			if test.withError != nil {
 				assert.True(t, errors.Is(err, test.withError), "want: %s; got: %s", test.withError, err)
 				return
@@ -362,11 +362,11 @@ func TestGtm_UpdateGeoMap(t *testing.T) {
 	}
 }
 
-func TestGtm_DeleteGeoMap(t *testing.T) {
-	var result GeoMapResponse
-	var req GeoMap
+func TestGtm_DeleteCidrMap(t *testing.T) {
+	var result CidrMapResponse
+	var req CidrMap
 
-	respData, err := loadTestData("TestGtm_CreateGeoMap.resp.json")
+	respData, err := loadTestData("TestGtm_CreateCidrMap.resp.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -375,7 +375,7 @@ func TestGtm_DeleteGeoMap(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	reqData, err := loadTestData("TestGtm_CreateGeoMap.req.json")
+	reqData, err := loadTestData("TestGtm_CreateCidrMap.req.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -385,7 +385,7 @@ func TestGtm_DeleteGeoMap(t *testing.T) {
 	}
 
 	tests := map[string]struct {
-		geomap           *GeoMap
+		cmap             *CidrMap
 		domainName       string
 		responseStatus   int
 		responseBody     string
@@ -395,18 +395,18 @@ func TestGtm_DeleteGeoMap(t *testing.T) {
 		headers          http.Header
 	}{
 		"200 OK": {
-			geomap:     &req,
+			cmap:       &req,
 			domainName: "example.akadns.net",
 			headers: http.Header{
 				"Content-Type": []string{"application/vnd.config-gtm.v1.4+json;charset=UTF-8"},
 			},
 			responseStatus:   http.StatusOK,
 			responseBody:     string(respData),
-			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath:     "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			expectedResponse: result.Status,
 		},
 		"500 internal server error": {
-			geomap:         &req,
+			cmap:           &req,
 			domainName:     "example.akadns.net",
 			headers:        http.Header{},
 			responseStatus: http.StatusInternalServerError,
@@ -414,13 +414,13 @@ func TestGtm_DeleteGeoMap(t *testing.T) {
 {
     "type": "internal_error",
     "title": "Internal Server Error",
-    "detail": "Error updating geomap"
+    "detail": "Error creating asmap"
 }`,
-			expectedPath: "/config-gtm/v1/domains/example.akadns.net/geographic-maps/UK%20Delivery",
+			expectedPath: "/config-gtm/v1/domains/example.akadns.net/cidr-maps/The%20North",
 			withError: &Error{
 				Type:       "internal_error",
 				Title:      "Internal Server Error",
-				Detail:     "Error updating geomap",
+				Detail:     "Error creating asmap",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
@@ -436,10 +436,10 @@ func TestGtm_DeleteGeoMap(t *testing.T) {
 				assert.NoError(t, err)
 			}))
 			client := mockAPIClient(t, mockServer)
-			result, err := client.DeleteGeoMap(
+			result, err := client.DeleteCidrMap(
 				session.ContextWithOptions(
 					context.Background(),
-					session.WithContextHeaders(test.headers)), test.geomap, test.domainName)
+					session.WithContextHeaders(test.headers)), test.cmap, test.domainName)
 			if test.withError != nil {
 				assert.True(t, errors.Is(err, test.withError), "want: %s; got: %s", test.withError, err)
 				return

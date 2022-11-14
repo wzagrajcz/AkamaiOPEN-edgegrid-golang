@@ -3,7 +3,7 @@ package cps
 import (
 	"errors"
 
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/v2/pkg/session"
+	"github.com/wzagrajcz/AkamaiOPEN-edgegrid-golang/v3/pkg/session"
 )
 
 var (

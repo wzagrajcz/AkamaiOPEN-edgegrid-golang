@@ -1,5 +1,12 @@
 # EDGEGRID GOLANG RELEASE NOTES
 
+## 3.0.0 (November xx, 2022)
+
+### BREAKING CHANGES:
+
+* Rename package `configdns` to `dns`
+* Rename package `configgtm` to `gtm`
+
 ## 2.17.0 (October 24, 2022)
 
 #### FEATURES/ENHANCEMENTS:
