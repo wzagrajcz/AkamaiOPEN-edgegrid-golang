@@ -3,7 +3,7 @@ package cloudlets
 import (
 	"errors"
 
-	"github.com/akamai/AkamaiOPEN-edgegrid-golang/v3/pkg/session"
+	"github.com/wzagrajcz/AkamaiOPEN-edgegrid-golang/v3/pkg/session"
 )
 
 var (
